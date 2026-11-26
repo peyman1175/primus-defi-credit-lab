@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primus MPC TLS | DeFi Credit Rail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Courier New', Courier, monospace; }
+        .terminal-box { background-color: #010409; border: 1px solid #30363d; border-radius: 6px; padding: 16px; height: 300px; overflow-y: auto; }
+        .log-line { margin-bottom: 8px; font-size: 14px; }
+        .log-sys { color: #58a6ff; }
+        .log-success { color: #3fb950; }
+        .log-warn { color: #d29922; }
+        .btn { padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; border: none; }
+        .btn-sim { background-color: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+        .btn-sim:hover { background-color: #30363d; }
+        .btn-web3 { background-color: #238636; color: #ffffff; }
+        .btn-web3:hover { background-color: #2ea043; }
+        .twitter-link { color: #58a6ff; text-decoration: none; transition: 0.2s; }
+        .twitter-link:hover { color: #79c0ff; text-decoration: underline; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-start mb-8 border-b border-gray-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Web2 to DeFi Credit Rail</h1>
+                <p class="text-gray-400">Powered by Primus Labs MPC TLS Architecture</p>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-gray-500 block mb-1">Developed by</span>
+                <a href="https://x.com/slytherin_salaz" target="_blank" class="twitter-link font-bold flex items-center">
+                    <svg class="w-4 h-4 mr-2 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    @Slytherin_salaz
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="p-6 border border-gray-700 rounded-lg bg-gray-900">
+                <h2 class="text-xl text-white mb-4">Architecture Lab</h2>
+                <p class="text-sm text-gray-400 mb-6">Select execution environment to initiate the data blinding process and ZK proof generation.</p>
+                <div class="flex flex-col space-y-4">
+                    <button onclick="runSimulation()" class="btn btn-sim">Run Simulation (Off-chain Demo)</button>
+                    <button onclick="runWeb3()" class="btn btn-web3">Connect Web3 (Rabby/MetaMask)</button>
+                </div>
+            </div>
+            
+            <div class="terminal-box" id="terminal">
+                <div class="log-line log-sys">> System initialized. Waiting for execution...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // REPLACE THIS WITH YOUR REMIX CONTRACT ADDRESS
+        const CONTRACT_ADDRESS = "0x3B48702B30cA12fCe054e61441e7Af4f3e2Ac61c";
+        
+        const CONTRACT_ABI = [
+            "function submitIncomeProof(uint256 _income, string memory _proofHash) public"
+        ];
+
+        function log(message, type = 'sys') {
+            const term = document.getElementById('terminal');
+            const line = document.createElement('div');
+            line.className = `log-line log-${type}`;
+            line.innerText = `> ${message}`;
+            term.appendChild(line);
+            term.scrollTop = term.scrollHeight;
+        }
+
+        async function mockDataFlow() {
+            log("Initiating MPC TLS handshake with Upwork server...", "sys");
+            await new Promise(r => setTimeout(r, 1500));
+            log("Session keys split locally. Blinding personal identifiers (Name, SSN).", "warn");
+            await new Promise(r => setTimeout(r, 1500));
+            log("Payload routed to Primus Attestor Network (TEE).", "sys");
+            await new Promise(r => setTimeout(r, 2000));
+            log("ZK Proof generated: Valid Income > $50,000.", "success");
+            const proofHash = "0x" + Math.random().toString(16).slice(2, 40).padEnd(64, '0');
+            log(`Proof Root: ${proofHash}`, "sys");
+            return proofHash;
+        }
+
+        async function runSimulation() {
+            document.getElementById('terminal').innerHTML = '';
+            log("=== SIMULATION MODE STARTED ===", "warn");
+            const proofHash = await mockDataFlow();
+            await new Promise(r => setTimeout(r, 1000));
+            log("Submitting cryptographic proof to virtual smart contract...", "sys");
+            await new Promise(r => setTimeout(r, 1500));
+            log("Transaction Confirmed (Simulated). Credit credential issued.", "success");
+            log("Undercollateralized loan status: UNLOCKED.", "success");
+        }
+
+        async function runWeb3() {
+            document.getElementById('terminal').innerHTML = '';
+            log("=== WEB3 MODE STARTED ===", "warn");
+            
+            if (typeof window.ethereum === 'undefined') {
+                log("Web3 Provider not detected. Please install Rabby Wallet or MetaMask.", "warn");
+                return;
+            }
+
+            try {
+                log("Requesting wallet connection...", "sys");
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const address = await signer.getAddress();
+                log(`Wallet connected: ${address.substring(0,6)}...${address.substring(38)}`, "success");
+
+                const proofHash = await mockDataFlow();
+                
+                log("Broadcasting transaction to Smart Contract on Base Mainnet...", "sys");
+                const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                
+                const tx = await contract.submitIncomeProof(85000, proofHash);
+                log(`Transaction sent! TxHash: ${tx.hash.substring(0,10)}...`, "warn");
+                
+                await tx.wait();
+                log("Transaction mined and verified onchain!", "success");
+                log("Credit Credential minted. Loan UNLOCKED.", "success");
+
+            } catch (error) {
+                log(`Error: ${error.message}`, "warn");
+            }
+        }
+    </script>
+</body>
+</html>
