@@ -3,150 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primus MPC TLS | DeFi Credit Rail</title>
+    <title>Primus MPC-TLS | Uncollateralized DeFi Lending</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-    <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Courier New', Courier, monospace; }
-        .terminal-box { background-color: #010409; border: 1px solid #30363d; border-radius: 6px; padding: 16px; height: 300px; overflow-y: auto; }
-        .log-line { margin-bottom: 8px; font-size: 14px; }
-        .log-sys { color: #58a6ff; }
-        .log-success { color: #3fb950; }
-        .log-warn { color: #d29922; }
-        .btn { padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; border: none; }
-        .btn-sim { background-color: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
-        .btn-sim:hover { background-color: #30363d; }
-        .btn-web3 { background-color: #238636; color: #ffffff; }
-        .btn-web3:hover { background-color: #2ea043; }
-        .twitter-link { color: #58a6ff; text-decoration: none; transition: 0.2s; }
-        .twitter-link:hover { color: #79c0ff; text-decoration: underline; }
-    </style>
-</head>
-<body class="p-8">
-    <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between items-start mb-8 border-b border-gray-800 pb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-white mb-2">Web2 to DeFi Credit Rail</h1>
-                <p class="text-gray-400">Powered by Primus Labs MPC TLS Architecture</p>
-            </div>
-            <div class="text-right">
-                <span class="text-xs text-gray-500 block mb-1">Developed by</span>
-                <a href="https://x.com/slytherin_salaz" target="_blank" class="twitter-link font-bold flex items-center">
-                    <svg class="w-4 h-4 mr-2 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    @Slytherin_salaz
-                </a>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="p-6 border border-gray-700 rounded-lg bg-gray-900">
-                <h2 class="text-xl text-white mb-4">Architecture Lab</h2>
-                <p class="text-sm text-gray-400 mb-6">Select execution environment to initiate the data blinding process and ZK proof generation.</p>
-                <div class="flex flex-col space-y-4">
-                    <button onclick="runSimulation()" class="btn btn-sim">Run Simulation (Off-chain Demo)</button>
-                    <button onclick="runWeb3()" class="btn btn-web3">Connect Web3 (Rabby/MetaMask)</button>
-                </div>
-            </div>
-            
-            <div class="terminal-box" id="terminal">
-                <div class="log-line log-sys">> System initialized. Waiting for execution...</div>
-            </div>
-        </div>
-    </div>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script>
-        const CONTRACT_ADDRESS = "0x3B48702B30cA12fCe054e61441e7Af4f3e2Ac61c";
-        
-        const CONTRACT_ABI = [
-            "function submitIncomeProof(uint256 _income, string memory _proofHash) public"
-        ];
-
-        function log(message, type = 'sys') {
-            const term = document.getElementById('terminal');
-            const line = document.createElement('div');
-            line.className = `log-line log-${type}`;
-            line.innerText = `> ${message}`;
-            term.appendChild(line);
-            term.scrollTop = term.scrollHeight;
-        }
-
-        async function mockDataFlow() {
-            log("Initiating MPC TLS handshake with Upwork server...", "sys");
-            await new Promise(r => setTimeout(r, 1500));
-            log("Session keys split locally. Blinding personal identifiers (Name, SSN).", "warn");
-            await new Promise(r => setTimeout(r, 1500));
-            log("Payload routed to Primus Attestor Network (TEE).", "sys");
-            await new Promise(r => setTimeout(r, 2000));
-            log("ZK Proof generated: Valid Income > $50,000.", "success");
-            const proofHash = "0x" + Math.random().toString(16).slice(2, 40).padEnd(64, '0');
-            log(`Proof Root: ${proofHash}`, "sys");
-            return proofHash;
-        }
-
-        async function runSimulation() {
-            document.getElementById('terminal').innerHTML = '';
-            log("=== SIMULATION MODE STARTED ===", "warn");
-            const proofHash = await mockDataFlow();
-            await new Promise(r => setTimeout(r, 1000));
-            log("Submitting cryptographic proof to virtual smart contract...", "sys");
-            await new Promise(r => setTimeout(r, 1500));
-            log("Transaction Confirmed (Simulated). Credit credential issued.", "success");
-            log("Undercollateralized loan status: UNLOCKED.", "success");
-        }
-
-        async function runWeb3() {
-            document.getElementById('terminal').innerHTML = '';
-            log("=== WEB3 MODE STARTED ===", "warn");
-            
-            if (typeof window.ethereum === 'undefined') {
-                log("Web3 Provider not detected. Please install Rabby Wallet or MetaMask.", "warn");
-                return;
-            }
-
-            try {
-                log("Requesting wallet connection...", "sys");
-                await window.ethereum.request({ method: 'eth_requestAccounts' });
-                
-                // --- Network Switcher to Base Mainnet ---
-                const targetChainId = '0x2105'; // Base Mainnet Chain ID in Hex (8453)
-                const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-                
-                if (currentChainId !== targetChainId) {
-                    log("Switching network to Base Mainnet...", "warn");
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: targetChainId }],
-                        });
-                        log("Successfully switched to Base Mainnet.", "success");
-                    } catch (switchError) {
-                        log("Please manually switch your wallet to Base Mainnet to continue.", "warn");
-                        return;
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        cyan: { 400: '#22d3ee', 500: '#06b6d4', 900: '#164e63' },
+                        emerald: { 400: '#34d399', 500: '#10b981', 900: '#064e3b' },
+                        slate: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
                     }
                 }
-                // ----------------------------------------
-
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
-                const address = await signer.getAddress();
-                log(`Wallet connected: ${address.substring(0,6)}...${address.substring(38)}`, "success");
-
-                const proofHash = await mockDataFlow();
-                
-                log("Broadcasting transaction to Smart Contract on Base...", "sys");
-                const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                
-                const tx = await contract.submitIncomeProof(85000, proofHash);
-                log(`Transaction sent! TxHash: ${tx.hash.substring(0,10)}...`, "warn");
-                
-                await tx.wait();
-                log("Transaction mined and verified onchain!", "success");
-                log("Credit Credential minted. Loan UNLOCKED.", "success");
-
-            } catch (error) {
-                log(`Error: ${error.message}`, "warn");
             }
         }
     </script>
-</body>
-</html>
+    <style>
+        body { background-color: #020617; color: #e2e8f0; overflow: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .neon-border-cyan { border-color: #22d3ee; box-shadow: 0 0 10px rgba(34, 211, 238, 0.2); }
+        .neon-border-emerald { border-color: #34d399; box-shadow: 0 0 10px rgba(52, 211, 153, 0.2); }
+        .neon-text-cyan { color: #22d3ee; text-shadow: 0 0 8px rgba(34, 211, 238, 0.4); }
+        .neon-text-emerald { color: #34d399; text-shadow: 0 0 8px rgba(52, 211, 153, 0.4); }
+
+        .step-item.active .step-circle { background-color: #22d3ee; color: #020617; box-shadow: 0 0 15px rgba(34, 211, 238, 0.6); }
+        .step-item.completed .step-circle { background-color: #10b981; color: #020617; }
+        
+        #console-output p { margin: 0; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        #console-output .timestamp { color: #64748b; margin-right: 8px; }
+        #console-output .success { color: #34d399; }
+        #console-output .system { color: #22d3ee; }
+        #console-output .warning { color: #f59e0b; }
+
+        .blind-toggle { cursor: pointer; transition: all 0.2s; }
+        .blind-toggle:hover { opacity: 0.8; }
+        .blind-toggle.blinded { color: #34d399; }
+        .data-field.hashed { color: #94a3b8; filter: blur(0.5px); }
+        .hidden-stage { display: none !important; }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(52, 211, 153, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(52, 211, 153, 0.6); }
+        }
+        .animate-pulse-glow { animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        .twitter-link { color: #22d3ee; text-decoration: none; transition: 0.2s; }
+        .twitter-link:hover { color: #34d399; text-shadow: 0 0 8px rgba(52, 211, 153, 0.4); }
+    </style>
+</head>
+<body class="flex flex-col h-screen font-sans antialiased text-sm">
+
+    <header class="h-16 border-b border-slate-800 glass-panel flex items-center justify-between px-6 z-20 shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-emerald-500 flex items-center justify-center font-mono font-bold text-slate-950 text-xl shadow-[0_0_10px_rgba(16,185,129,0.5)]">P</div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight tracking-tight text-white">Primus ZK-Lending Simulator</h1>
+                <p class="text-xs text-slate-400 font-mono">Build: Uncollateralized DeFi Protocol</p>
+            </div>
+        </div>
+        <div class="flex flex-col items-end">
+            <span class="text-xs text-slate-500">Architecture developed by</span>
+            <a href="https://x.com/slytherin_salaz" target="_blank" class="twitter-link font-bold flex items-center text-sm font-mono mt-0.5">
+                <svg class="w-3 h-3 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                @Slytherin_salaz
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <aside class="w-64 border-r border-slate-800 glass-panel p-6 flex flex-col z-10 shrink-0">
+            <h2 class="text-xs uppercase tracking-widest text-slate-500 font-bold mb-6">Integration Flow</h2>
+            <div class="flex flex-col gap-6 relative">
+                <div class="absolute left-3 top-3 bottom-3 w-0.5 bg-slate-800 -z-10"></div>
+                <div class="step-item active" id="nav-step-1">
+                    <div class="flex items-center gap-4">
+                        <div class="step-circle w-6 h-6 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-bold text-[10px] text-slate-400">1</div>
+                        <span class="font-semibold text-white">Web2 Source</span>
+                    </div>
+                </div>
+                <div class="step-item" id="nav-step-2">
+                    <div class="flex items-center gap-4">
+                        <div class="step-circle w-6 h-6 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-bold text-[10px] text-slate-400">2</div>
+                        <span class="font-semibold text-slate-400">Local Blinding</span>
+                    </div>
+                </div>
+                <div class="step-item" id="nav-step-3">
+                    <div class="flex items-center gap-4">
+                        <div class="step-circle w-6 h-6 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-bold text-[10px] text-slate-400">3</div>
+                        <span class="font-semibold text-slate-400">Attestor ZK Proof</span>
+                    </div>
+                </div>
+                <div class="step-item" id="nav-step-4">
+                    <div class="flex items-center gap-4">
+                        <div class="step-circle w-6 h-6 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-bold text-[10px] text-slate-400">4</div>
+                        <span class="font-semibold text-slate-400">DeFi Smart Contract</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dual Mode Indicator -->
+            <div class="mt-auto">
+                <div class="p-4 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                    <p class="text-xs text-slate-400 mb-2">Execution Environment:</p>
+                    <div class="flex flex-col gap-1 text-[11px] font-mono">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                            <span class="text-slate-300">Web2 Simulation (Stages 1-3)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="text-slate-300">Live Web3 Mainnet (Stage 4)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="flex-1 flex flex-col relative overflow-hidden bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwYzAgMTEuMDQ2IDguOTU0IDIwIDIwIDIwaDIwVjIwaC0yMEMyOC45NTQgMjAgMjAgMTEuMDQ2IDIwIDBIMHYyMGgyMHoiIGZpbGw9IiMzMzQxNTUiIGZpbGwtb3BhY2l0eT0iMC4wNSIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+')]">
+            
+            <div id="stage-1" class="stage-container p-8 h-full flex flex-col w-full max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-2">Connect Web2 Reputation</h2>
+                    <p class="text-slate-400">Establish an MPC-TLS session with your Upwork dashboard to securely extract your income history without proxies.</p>
+                </div>
+                <div class="flex-1 glass-panel rounded-xl border-slate-700 flex flex-col overflow-hidden relative shadow-2xl">
+                    <div class="h-10 bg-slate-900 border-b border-slate-700 flex items-center px-4 gap-2">
+                        <div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-slate-700"></div><div class="w-3 h-3 rounded-full bg-slate-700"></div><div class="w-3 h-3 rounded-full bg-slate-700"></div></div>
+                        <div class="mx-auto bg-slate-800 rounded text-[10px] text-slate-400 px-4 py-1 flex items-center gap-2 font-mono w-1/2 justify-center">
+                            <svg class="w-3 h-3 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                            https://www.upwork.com/ab/reports/
+                        </div>
+                    </div>
+                    <div class="p-8 flex-1 bg-white flex flex-col items-center justify-center">
+                        <div class="text-green-600 font-bold text-4xl mb-2">Upwork</div>
+                        <h3 class="text-slate-800 text-xl font-semibold mb-8">Certificate of Earnings</h3>
+                        <div class="w-full max-w-md bg-slate-50 rounded-lg border border-slate-200 p-6 shadow-sm">
+                            <div class="flex justify-between border-b border-slate-200 pb-4 mb-4"><span class="text-slate-500 font-medium">Freelancer Name</span><span class="text-slate-900 font-bold">Alex Developer</span></div>
+                            <div class="flex justify-between border-b border-slate-200 pb-4 mb-4"><span class="text-slate-500 font-medium">Account ID</span><span class="text-slate-900 font-mono text-xs">up_8829103X</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500 font-medium">12-Month Earnings Volume</span><span class="text-green-600 font-bold text-xl">$85,000.00</span></div>
+                        </div>
+                        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <button onclick="nextStage(2)" class="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold rounded-lg shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Establish MPC-TLS Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-2" class="stage-container hidden-stage p-8 h-full flex flex-col w-full max-w-5xl mx-auto">
+                <div class="mb-6 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Transport Layer: Local Data Blinding</h2>
+                        <p class="text-slate-400">Use local session keys to mask Personally Identifiable Information (PII) before sending payload to the Attestor network.</p>
+                    </div>
+                    <button id="btn-generate-proof" onclick="attemptProofGeneration()" class="px-6 py-2 bg-slate-700 text-slate-400 font-bold rounded shadow-lg cursor-not-allowed transition-all font-mono text-sm border border-slate-600">
+                        GENERATE_PROOF()
+                    </button>
+                </div>
+                <div class="flex-1 grid grid-cols-2 gap-6 min-h-0">
+                    <div class="glass-panel rounded-xl border-slate-700 flex flex-col overflow-hidden relative">
+                        <div class="bg-slate-800/80 p-3 border-b border-slate-700 flex justify-between items-center font-mono text-xs">
+                            <span class="text-slate-300">payload.json</span><span class="text-cyan-400">Local Browser Environment</span>
+                        </div>
+                        <div class="p-6 font-mono text-sm overflow-y-auto text-slate-300" id="json-viewer">
+                            <span class="text-pink-400">{</span><br>
+                            &nbsp;&nbsp;<span class="text-cyan-300">"protocol"</span>: <span class="text-yellow-300">"tls_1_3"</span>,<br>
+                            &nbsp;&nbsp;<span class="text-cyan-300">"server"</span>: <span class="text-yellow-300">"upwork.com"</span>,<br>
+                            &nbsp;&nbsp;<span class="text-cyan-300">"data"</span>: <span class="text-pink-400">{</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-cyan-300">"user_id"</span>: <span class="text-yellow-300" id="val-id">"up_8829103X"</span>,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-cyan-300">"full_name"</span>: <span class="text-yellow-300" id="val-name">"Alex Developer"</span>,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-cyan-300">"email"</span>: <span class="text-yellow-300" id="val-email">"alex@web3build.er"</span>,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-cyan-300">"verified_income_usd"</span>: <span class="text-purple-400">85000</span><br>
+                            &nbsp;&nbsp;<span class="text-pink-400">}</span><br>
+                            <span class="text-pink-400">}</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-xl border-slate-700 flex flex-col p-6">
+                        <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider border-b border-slate-700 pb-2">Privacy Configuration</h3>
+                        <p class="text-xs text-slate-400 mb-6">Select sensitive fields to blind via MPC before transmitting. The Attestor network only needs to verify the <span class="text-emerald-400 font-mono">verified_income_usd</span> predicate.</p>
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center justify-between p-3 rounded bg-slate-800/50 border border-slate-700">
+                                <div><div class="font-mono text-sm text-cyan-300">user_id</div><div class="text-[10px] text-slate-500 mt-1">Upwork Account Identifier</div></div>
+                                <button onclick="toggleBlind('id', this)" class="blind-toggle flex items-center gap-2 px-3 py-1.5 rounded bg-slate-700 text-slate-300 text-xs font-bold border border-slate-600"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z"></path></svg>BLIND DATA</button>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded bg-slate-800/50 border border-slate-700">
+                                <div><div class="font-mono text-sm text-cyan-300">full_name</div><div class="text-[10px] text-slate-500 mt-1">Real Identity</div></div>
+                                <button onclick="toggleBlind('name', this)" class="blind-toggle flex items-center gap-2 px-3 py-1.5 rounded bg-slate-700 text-slate-300 text-xs font-bold border border-slate-600"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z"></path></svg>BLIND DATA</button>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded bg-slate-800/50 border border-slate-700">
+                                <div><div class="font-mono text-sm text-cyan-300">email</div><div class="text-[10px] text-slate-500 mt-1">Contact Information</div></div>
+                                <button onclick="toggleBlind('email', this)" class="blind-toggle flex items-center gap-2 px-3 py-1.5 rounded bg-slate-700 text-slate-300 text-xs font-bold border border-slate-600"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z"></path></svg>BLIND DATA</button>
+                            </div>
+                            <div id="blinding-error" class="hidden mt-4 p-3 rounded bg-rose-900/30 border border-rose-500/50 text-rose-400 text-xs font-mono flex items-start gap-2">
+                                <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                <span>CRITICAL: PII Leakage Detected. You must blind all sensitive fields before network transmission.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-3" class="stage-container hidden-stage p-8 h-full flex flex-col w-full max-w-5xl mx-auto">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-2">Decentralized Attestation Network</h2>
+                    <p class="text-slate-400">Primus nodes receive the blinded payload, verify the TLS signature, and generate a ZK Proof without seeing the original PII.</p>
+                </div>
+                <div class="flex-1 grid grid-rows-[2fr_1fr] gap-6 min-h-0">
+                    <div class="glass-panel rounded-xl border-slate-700 flex flex-col overflow-hidden neon-border-cyan relative">
+                        <div class="bg-slate-900 border-b border-slate-700 p-2 flex items-center gap-4 text-xs font-mono">
+                            <span class="text-slate-400 px-2">Terminal > root@primus-node-cluster</span><div class="flex-1"></div>
+                            <span class="flex items-center gap-2 text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>Consensus: REACHED</span>
+                        </div>
+                        <div class="flex-1 p-4 font-mono text-[11px] overflow-y-auto bg-[#050510]" id="console-output"></div>
+                    </div>
+                    <div class="glass-panel rounded-xl border-slate-700 p-6 flex flex-col justify-center items-center relative overflow-hidden transition-all duration-700" id="proof-receipt-card" style="opacity: 0; transform: translateY(20px);">
+                        <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/20 to-transparent"></div>
+                        <h3 class="text-emerald-400 font-mono font-bold text-lg mb-2 z-10 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>ZK-Proof Generated Successfully</h3>
+                        <div class="w-full max-w-2xl bg-slate-900 rounded border border-slate-700 p-4 font-mono text-[10px] text-slate-400 break-all z-10 shadow-inner text-center">
+                            <span class="text-slate-500">Root Hash generated. Ready for onchain submission.</span>
+                        </div>
+                        <button onclick="nextStage(4)" class="mt-4 px-8 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded transition-all z-10 animate-pulse-glow border border-emerald-400">
+                            Continue to Live Web3 Protocol ->
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-4" class="stage-container hidden-stage p-8 h-full flex flex-col w-full max-w-5xl mx-auto">
+                <div class="mb-6 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Live Web3 Mainnet Execution</h2>
+                        <p class="text-slate-400">Connect your actual Web3 wallet (Rabby/
