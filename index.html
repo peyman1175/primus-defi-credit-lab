@@ -55,7 +55,6 @@
     </div>
 
     <script>
-        // REPLACE THIS WITH YOUR REMIX CONTRACT ADDRESS
         const CONTRACT_ADDRESS = "0x3B48702B30cA12fCe054e61441e7Af4f3e2Ac61c";
         
         const CONTRACT_ABI = [
@@ -107,6 +106,26 @@
             try {
                 log("Requesting wallet connection...", "sys");
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                // --- Network Switcher to Base Mainnet ---
+                const targetChainId = '0x2105'; // Base Mainnet Chain ID in Hex (8453)
+                const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+                
+                if (currentChainId !== targetChainId) {
+                    log("Switching network to Base Mainnet...", "warn");
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: targetChainId }],
+                        });
+                        log("Successfully switched to Base Mainnet.", "success");
+                    } catch (switchError) {
+                        log("Please manually switch your wallet to Base Mainnet to continue.", "warn");
+                        return;
+                    }
+                }
+                // ----------------------------------------
+
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
                 const signer = provider.getSigner();
                 const address = await signer.getAddress();
@@ -114,7 +133,7 @@
 
                 const proofHash = await mockDataFlow();
                 
-                log("Broadcasting transaction to Smart Contract on Base Mainnet...", "sys");
+                log("Broadcasting transaction to Smart Contract on Base...", "sys");
                 const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
                 
                 const tx = await contract.submitIncomeProof(85000, proofHash);
