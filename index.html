@@ -120,7 +120,6 @@
                 </div>
             </div>
             
-            <!-- Dual Mode Indicator -->
             <div class="mt-auto">
                 <div class="p-4 rounded-lg bg-slate-800/50 border border-slate-700/50">
                     <p class="text-xs text-slate-400 mb-2">Execution Environment:</p>
@@ -162,7 +161,7 @@
                             <div class="flex justify-between"><span class="text-slate-500 font-medium">12-Month Earnings Volume</span><span class="text-green-600 font-bold text-xl">$85,000.00</span></div>
                         </div>
                         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                            <button onclick="nextStage(2)" class="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold rounded-lg shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all flex items-center gap-2">
+                            <button onclick="nextStage(2)" class="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold rounded-lg shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all flex items-center gap-2 relative z-50 pointer-events-auto">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                                 Establish MPC-TLS Session
                             </button>
@@ -254,4 +253,207 @@
                 <div class="mb-6 flex justify-between items-end">
                     <div>
                         <h2 class="text-2xl font-bold text-white mb-2">Live Web3 Mainnet Execution</h2>
-                        <p class="text-slate-400">Connect your actual Web3 wallet (Rabby/
+                        <p class="text-slate-400">Connect your actual Web3 wallet (Rabby/MetaMask) to broadcast the proof directly to the Base Mainnet smart contract.</p>
+                    </div>
+                </div>
+                <div class="flex-1 grid grid-cols-2 gap-6 min-h-0">
+                    <div class="glass-panel rounded-xl border-slate-700 flex flex-col p-6 relative">
+                        <h3 class="text-white font-bold text-lg mb-6 border-b border-slate-700 pb-2 flex justify-between items-center">
+                            DeFi Contract Interaction
+                            <span class="text-xs font-mono bg-blue-900/50 text-blue-400 px-2 py-1 rounded border border-blue-500/50">Base Mainnet</span>
+                        </h3>
+                        
+                        <div class="flex-1 bg-slate-900 rounded border border-slate-800 mb-6 font-mono text-[11px] p-4 overflow-y-auto text-slate-300" id="web3-terminal">
+                            > Awaiting Web3 provider connection...<br>
+                        </div>
+
+                        <div id="contract-status" class="flex flex-col gap-3">
+                            <button id="btn-execute-sim" onclick="runSimulatedTx()" class="w-full py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold rounded-lg border border-slate-600 transition-all flex items-center justify-center gap-2">
+                                Simulate Tx (Off-chain Demo)
+                            </button>
+                            <button id="btn-execute-web3" onclick="runRealWeb3Tx()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-400 transition-all flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Connect Wallet & Execute on Base Mainnet
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-xl border-slate-700 flex flex-col p-6 items-center justify-center text-center relative overflow-hidden" id="defi-dashboard">
+                        <div class="w-24 h-24 rounded-full bg-slate-800 border-4 border-slate-700 flex items-center justify-center mb-4 transition-all duration-500" id="credit-status-icon">
+                            <svg class="w-10 h-10 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7z"></path></svg>
+                        </div>
+                        <h3 class="text-slate-400 font-bold text-lg mb-1" id="credit-title">Credit Line Locked</h3>
+                        <div class="text-4xl font-bold text-white mb-6 font-mono" id="credit-amount">$0.00</div>
+                        
+                        <div id="success-overlay" class="absolute inset-0 bg-emerald-900/95 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500 z-20">
+                            <svg class="w-20 h-20 text-emerald-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <h2 class="text-2xl font-bold text-white mb-2">Loan Unlocked!</h2>
+                            <p class="text-emerald-200 text-sm max-w-xs mb-6">Zero-knowledge proof verified onchain. Undercollateralized credit line established based on Web2 reputation.</p>
+                            <a href="https://basescan.org" target="_blank" id="tx-link" class="text-emerald-400 font-mono text-xs hover:underline mb-4 hidden">View on Basescan -></a>
+                            <button onclick="location.reload()" class="px-6 py-2 bg-slate-900 text-emerald-400 border border-emerald-500 rounded font-mono text-xs hover:bg-emerald-950 transition-colors">
+                                RESET_LAB()
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 h-8 bg-slate-900 border-t border-slate-800 flex items-center px-4 font-mono text-[10px] text-slate-500 z-30">
+                <span class="text-cyan-500 mr-2">SYS></span> <span id="global-status">Awaiting User Interaction...</span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- CONFIGURATION ---
+        window.CONTRACT_ADDRESS = "0x3B48702B30cA12fCe054e61441e7Af4f3e2Ac61c";
+        window.CONTRACT_ABI = ["function submitIncomeProof(uint256 _income, string memory _proofHash) public"];
+        window.BASE_CHAIN_ID = '0x2105'; // 8453 for Base Mainnet
+        
+        window.currentStage = 1;
+        window.state = { blindedFields: { id: false, name: false, email: false }, originalData: { id: '"up_8829103X"', name: '"Alex Developer"', email: '"alex@web3build.er"' } };
+        window.mockHash = (str) => '"0x' + Array.from(str).map(c => c.charCodeAt(0).toString(16)).join('').padEnd(20, '0').substring(0, 16) + '...[MASKED]"';
+
+        window.updateNav = function(stage) {
+            for(let i=1; i<=4; i++) {
+                const item = document.getElementById(`nav-step-${i}`);
+                if(i < stage) { item.className = 'step-item completed'; item.querySelector('span').className = 'font-semibold text-slate-400'; }
+                else if(i === stage) { item.className = 'step-item active'; item.querySelector('span').className = 'font-semibold text-white'; }
+                else { item.className = 'step-item'; item.querySelector('span').className = 'font-semibold text-slate-400'; }
+            }
+        };
+
+        window.nextStage = function(targetStage) {
+            document.getElementById(`stage-${window.currentStage}`).classList.add('hidden-stage');
+            window.currentStage = targetStage;
+            document.getElementById(`stage-${window.currentStage}`).classList.remove('hidden-stage');
+            window.updateNav(window.currentStage);
+            if(window.currentStage === 3) window.runTerminalAnimation();
+        };
+
+        window.toggleBlind = function(field, btnElement) {
+            window.state.blindedFields[field] = true;
+            btnElement.className = 'blind-toggle flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold blinded border-emerald-500/50 bg-emerald-900/20';
+            btnElement.innerHTML = `<svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg> <span class="text-emerald-400">BLINDED</span>`;
+            btnElement.disabled = true;
+            const val = document.getElementById(`val-${field}`);
+            val.className = 'hashed text-slate-500';
+            val.innerText = window.mockHash(window.state.originalData[field]);
+            
+            if(window.state.blindedFields.id && window.state.blindedFields.name && window.state.blindedFields.email) {
+                const btn = document.getElementById('btn-generate-proof');
+                btn.className = 'px-6 py-2 bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)] border border-cyan-400 font-bold rounded font-mono text-sm transition-all';
+                document.getElementById('blinding-error').classList.add('hidden');
+            }
+        };
+
+        window.attemptProofGeneration = function() {
+            if(window.state.blindedFields.id && window.state.blindedFields.name && window.state.blindedFields.email) window.nextStage(3);
+            else document.getElementById('blinding-error').classList.remove('hidden');
+        };
+
+        window.runTerminalAnimation = function() {
+            const out = document.getElementById('console-output');
+            out.innerHTML = '';
+            const logs = [
+                { class: 'system', text: 'INIT MPC-TLS CONNECTION -> TARGET: upwork.com:443' },
+                { class: '', text: 'Received masked payload from client browser...' },
+                { class: 'success', text: 'Session Key Verification: PASSED (No PII leaked)' },
+                { class: 'system', text: 'VERIFYING SIGNATURE: RSA-SHA256' },
+                { class: 'success', text: 'Upwork Signature Verified. Data origin confirmed.' },
+                { class: 'warning', text: 'Predicate evaluation: {"verified_income_usd": 85000} > 50000' },
+                { class: 'success', text: 'Circuit evaluation: TRUE' },
+                { class: 'system', text: 'GENERATING GROTH16 PROOF...' },
+                { class: 'success', text: 'PROOF GENERATED. M-of-N Quorum Reached.' }
+            ];
+            let delay = 0;
+            logs.forEach((log, i) => {
+                delay += 400;
+                setTimeout(() => {
+                    out.innerHTML += `<p><span class="timestamp">[SYS]</span> <span class="${log.class}">${log.text}</span></p>`;
+                    out.scrollTop = out.scrollHeight;
+                    if(i === logs.length - 1) {
+                        const receipt = document.getElementById('proof-receipt-card');
+                        receipt.style.opacity = '1'; receipt.style.transform = 'translateY(0)'; receipt.classList.add('neon-border-emerald');
+                    }
+                }, delay);
+            });
+        };
+
+        window.web3Log = function(msg, type='info') {
+            const term = document.getElementById('web3-terminal');
+            const color = type === 'error' ? 'text-rose-400' : (type === 'success' ? 'text-emerald-400' : 'text-slate-300');
+            term.innerHTML += `<span class="${color}">> ${msg}</span><br>`;
+            term.scrollTop = term.scrollHeight;
+        };
+
+        window.showSuccessState = function(txHash = null) {
+            document.getElementById('defi-dashboard').classList.add('neon-border-emerald');
+            const icon = document.getElementById('credit-status-icon');
+            icon.className = 'w-24 h-24 rounded-full flex items-center justify-center mb-4 transition-all duration-500 bg-emerald-900 border-4 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.5)]';
+            icon.innerHTML = `<svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>`;
+            document.getElementById('credit-title').innerText = "Credit Line Unlocked";
+            document.getElementById('credit-title').classList.add('text-emerald-400');
+            document.getElementById('credit-amount').innerText = '$45,000.00';
+            document.getElementById('credit-amount').classList.add('text-emerald-400');
+            
+            if(txHash) {
+                const link = document.getElementById('tx-link');
+                link.href = `https://basescan.org/tx/${txHash}`;
+                link.classList.remove('hidden');
+            }
+            
+            setTimeout(() => {
+                const overlay = document.getElementById('success-overlay');
+                overlay.className = 'absolute inset-0 bg-emerald-900/95 backdrop-blur-sm flex flex-col items-center justify-center opacity-100 pointer-events-auto transition-opacity duration-500 z-20';
+            }, 1000);
+        };
+
+        window.runSimulatedTx = async function() {
+            window.web3Log("Running simulation (no wallet required)...");
+            setTimeout(() => { window.web3Log("Submitting ZK proof to virtual contract...", "success"); }, 1000);
+            setTimeout(() => { window.web3Log("Transaction Confirmed (Simulated)!", "success"); window.showSuccessState(); }, 2500);
+        };
+
+        window.runRealWeb3Tx = async function() {
+            if (typeof window.ethereum === 'undefined') {
+                window.web3Log("Error: No Web3 Provider found. Install Rabby or MetaMask.", "error");
+                return;
+            }
+            try {
+                window.web3Log("Requesting wallet connection...");
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (currentChainId !== window.BASE_CHAIN_ID) {
+                    window.web3Log("Switching network to Base Mainnet...");
+                    try {
+                        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: window.BASE_CHAIN_ID }] });
+                    } catch (e) {
+                        window.web3Log("Please switch to Base Mainnet manually.", "error"); return;
+                    }
+                }
+
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const address = await signer.getAddress();
+                window.web3Log(`Wallet connected: ${address.substring(0,6)}...`, "success");
+
+                window.web3Log("Broadcasting transaction to Base Mainnet contract...");
+                const contract = new ethers.Contract(window.CONTRACT_ADDRESS, window.CONTRACT_ABI, signer);
+                const fakeProof = "0x" + Math.random().toString(16).slice(2, 40).padEnd(64, '0');
+                
+                const tx = await contract.submitIncomeProof(85000, fakeProof);
+                window.web3Log(`Tx sent! Hash: ${tx.hash.substring(0,10)}...`, "info");
+                
+                await tx.wait();
+                window.web3Log("Transaction mined and verified onchain!", "success");
+                window.showSuccessState(tx.hash);
+
+            } catch (err) {
+                window.web3Log(`Tx Failed or Rejected: ${err.message.substring(0, 40)}...`, "error");
+            }
+        };
+    </script>
+</body>
+</html>
